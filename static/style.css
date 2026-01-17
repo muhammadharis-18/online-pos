@@ -1,48 +1,79 @@
+:root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --accent: #f59e0b;
+    --text: #ffffff;
+}
+
 body {
-    background: #0f172a;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, sans-serif;
+    margin: 0;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+header {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card);
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.item-card {
+    background: var(--card);
+    border: 1px solid #334155;
     color: white;
-    font-family: Arial;
-    text-align: center;
+    padding: 25px 10px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
 }
 
-h1 {
-    color: #38bdf8;
-}
-
-.box {
-    background: #1e293b;
+.cart-tray {
+    background: var(--card);
     padding: 20px;
-    width: 300px;
-    margin: auto;
-    border-radius: 10px;
+    border-radius: 20px 20px 0 0;
 }
 
-input {
-    width: 90%;
-    padding: 10px;
-    margin: 5px;
-}
-
-button {
-    padding: 10px;
-    width: 95%;
-    background: #38bdf8;
+.confirm-btn {
+    background: var(--accent);
+    color: black;
+    width: 100%;
+    padding: 18px;
+    border-radius: 12px;
     border: none;
+    font-weight: 800;
+    font-size: 1.2rem;
     margin-top: 10px;
-    cursor: pointer;
 }
 
-.save {
-    background: #22c55e;
+.order-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
-table {
-    width: 60%;
-    margin: 20px auto;
-    border-collapse: collapse;
-}
-
-th, td {
-    border-bottom: 1px solid gray;
+select {
     padding: 10px;
+    border-radius: 8px;
+    background: #334155;
+    color: white;
+    border: none;
 }
