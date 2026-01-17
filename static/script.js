@@ -1,48 +1,53 @@
-body {
-    background: #0f172a;
-    color: white;
-    font-family: Arial;
-    text-align: center;
+let cart = [];
+let total = 0;
+
+function addItem() {
+    const name = document.getElementById("name").value;
+    const price = Number(document.getElementById("price").value);
+    const qty = Number(document.getElementById("qty").value);
+
+    if (!name || price <= 0 || qty <= 0) return;
+
+    cart.push({ name, price, qty });
+    total += price * qty;
+
+    render();
 }
 
-h1 {
-    color: #38bdf8;
+function render() {
+    const table = document.getElementById("table");
+    table.innerHTML = `
+        <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Price</th>
+        </tr>
+    `;
+
+    cart.forEach(i => {
+        table.innerHTML += `
+            <tr>
+                <td>${i.name}</td>
+                <td>${i.qty}</td>
+                <td>${i.price}</td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("total").innerText = total;
 }
 
-.box {
-    background: #1e293b;
-    padding: 20px;
-    width: 300px;
-    margin: auto;
-    border-radius: 10px;
-}
-
-input {
-    width: 90%;
-    padding: 10px;
-    margin: 5px;
-}
-
-button {
-    padding: 10px;
-    width: 95%;
-    background: #38bdf8;
-    border: none;
-    margin-top: 10px;
-    cursor: pointer;
-}
-
-.save {
-    background: #22c55e;
-}
-
-table {
-    width: 60%;
-    margin: 20px auto;
-    border-collapse: collapse;
-}
-
-th, td {
-    border-bottom: 1px solid gray;
-    padding: 10px;
+function saveOrder() {
+    fetch("/save_order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: cart, total: total })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("Order Saved! ID: " + data.order_id);
+        cart = [];
+        total = 0;
+        render();
+    });
 }
