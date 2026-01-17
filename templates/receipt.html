@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Courier New', Courier, monospace; width: 80mm; padding: 10px; color: #000; }
+        .center { text-align: center; }
+        .bold { font-weight: bold; }
+        .line { border-bottom: 1px dashed #000; margin: 10px 0; }
+        table { width: 100%; font-size: 14px; }
+        .total { font-size: 18px; margin-top: 10px; }
+        @media print { .no-print { display: none; } }
+    </style>
+</head>
+<body onload="window.print()">
+    <div class="center">
+        <h2 style="margin:0;">🔥 YUMZO 🔥</h2>
+        <p>Haroonabad, Punjab<br>Contact: 03XX-XXXXXXX</p>
+    </div>
+    <div class="line"></div>
+    <p><strong>Order:</strong> #<span id="r-num"></span></p>
+    <p><strong>Date:</strong> <span id="r-date"></span></p>
+    <p><strong>Customer:</strong> <span id="r-cust"></span></p>
+    <p><strong>Phone:</strong> <span id="r-phone"></span></p>
+    <div class="line"></div>
+    <table id="r-items">
+        </table>
+    <div class="line"></div>
+    <div class="total bold">TOTAL: <span id="r-total"></span> PKR</div>
+    <div class="line"></div>
+    <p class="center">Thank you for choosing Yumzo!</p>
+    <button class="no-print" onclick="window.close()">Close</button>
+
+    <script>
+        // Data is passed via URL parameters for instant printing
+        const params = new URLSearchParams(window.location.search);
+        document.getElementById('r-num').innerText = params.get('num');
+        document.getElementById('r-date').innerText = new Date().toLocaleString();
+        document.getElementById('r-cust').innerText = params.get('name') || "Guest";
+        document.getElementById('r-phone').innerText = params.get('phone') || "N/A";
+        document.getElementById('r-total').innerText = params.get('total');
+        
+        const items = JSON.parse(params.get('items'));
+        const table = document.getElementById('r-items');
+        items.forEach(i => {
+            table.innerHTML += `<tr><td>${i.name}</td><td style="text-align:right">${i.price}</td></tr>`;
+        });
+    </script>
+</body>
+</html>
