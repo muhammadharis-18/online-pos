@@ -27,7 +27,7 @@ async function placeOrder() {
         payment: document.getElementById('payment').value,
         status: "New",
         // Critical: Use serverTimestamp for perfect sorting on the Kitchen page
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+createdAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
     try {
@@ -39,3 +39,4 @@ async function placeOrder() {
         alert("Sync Error: " + e.message);
     }
 }
+
