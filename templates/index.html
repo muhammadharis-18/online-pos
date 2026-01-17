@@ -1,32 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>POS System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yumzo Cashier</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <div class="app-container">
+        <header>
+            <h1>YUMZO POS</h1>
+            <div id="order-id">#ORD-001</div>
+        </header>
 
-<h1>🧾 POS SYSTEM</h1>
+        <main class="menu-grid">
+            <button class="item-card" onclick="addToCart('Zinger', 450)">🍔 Zinger 450</button>
+            <button class="item-card" onclick="addToCart('Fries', 200)">🍟 Fries 200</button>
+            <button class="item-card" onclick="addToCart('Drink', 100)">🥤 Drink 100</button>
+        </main>
 
-<div class="box">
-    <input id="name" placeholder="Item Name">
-    <input id="price" type="number" placeholder="Price">
-    <input id="qty" type="number" value="1">
-    <button onclick="addItem()">Add Item</button>
-</div>
+        <footer class="cart-tray">
+            <div id="cart-list"></div>
+            <div class="order-meta">
+                <select id="order-source">
+                    <option value="Walk-in">Walk-in</option>
+                    <option value="WhatsApp">WhatsApp</option>
+                </select>
+                <select id="payment-method">
+                    <option value="Cash">Cash</option>
+                    <option value="Online">Online</option>
+                </select>
+            </div>
+            <button class="confirm-btn" onclick="placeOrder()">CONFIRM: <span id="total-display">0</span> PKR</button>
+        </footer>
+    </div>
 
-<table id="table">
-    <tr>
-        <th>Item</th>
-        <th>Qty</th>
-        <th>Price</th>
-    </tr>
-</table>
-
-<h2>Total: <span id="total">0</span> PKR</h2>
-
-<button class="save" onclick="saveOrder()">Confirm Order</button>
-
-<script src="/static/script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="/static/script.js"></script>
 </body>
 </html>
