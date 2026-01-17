@@ -17,25 +17,25 @@ function addToCart(name, price) {
 }
 
 async function placeOrder() {
-    if (cart.length === 0) return alert("Select items first!");
+    if (cart.length === 0) return alert("Your cart is empty!");
 
     const orderData = {
         orderNum: Math.floor(100 + Math.random() * 900),
         items: cart,
         total: total,
-        source: document.getElementById('order-source').value,
-        payment: document.getElementById('payment-method').value,
+        source: document.getElementById('source').value,
+        payment: document.getElementById('payment').value,
         status: "New",
-        // This line is critical for the Kitchen screen to sort correctly
-        createdAt: firebase.firestore.Timestamp.now() 
+        // Critical: Use serverTimestamp for perfect sorting on the Kitchen page
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
     try {
         await db.collection("orders").add(orderData);
-        alert("Success! Order sent to Kitchen.");
+        alert("Order sent to Kitchen!");
         cart = []; total = 0;
         document.getElementById('total-display').innerText = "0 PKR";
     } catch (e) {
-        alert("Firebase Error: Check Internet Connection");
+        alert("Sync Error: " + e.message);
     }
 }
