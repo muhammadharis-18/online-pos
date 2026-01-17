@@ -1,3 +1,13 @@
+.pos-input {
+    width: 95%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-family: inherit;
+}
 :root {
   --primary: #f59e0b;
   --bg-gradient: radial-gradient(at top left, #1e1b4b, #020617);
@@ -63,3 +73,4 @@ body {
   border: none; font-weight: 800; font-size: 1.1rem;
   color: #000; display: flex; justify-content: space-between;
 }
+
