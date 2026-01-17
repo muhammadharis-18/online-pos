@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>POS System</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<h1>🧾 POS SYSTEM</h1>
+
+<div class="box">
+    <input id="name" placeholder="Item Name">
+    <input id="price" type="number" placeholder="Price">
+    <input id="qty" type="number" value="1">
+    <button onclick="addItem()">Add Item</button>
+</div>
+
+<table id="table">
+    <tr>
+        <th>Item</th>
+        <th>Qty</th>
+        <th>Price</th>
+    </tr>
+</table>
+
+<h2>Total: <span id="total">0</span> PKR</h2>
+
+<button class="save" onclick="saveOrder()">Confirm Order</button>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
