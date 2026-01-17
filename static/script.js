@@ -13,25 +13,29 @@ let total = 0;
 function addToCart(name, price) {
     cart.push({ name, price });
     total += price;
-    document.getElementById('total-display').innerText = total;
+    document.getElementById('total-display').innerText = total + " PKR";
 }
 
 async function placeOrder() {
-    if (cart.length === 0) return alert("Cart is empty!");
+    if (cart.length === 0) return alert("Select items first!");
 
-    const order = {
+    const orderData = {
         orderNum: Math.floor(100 + Math.random() * 900),
         items: cart,
         total: total,
         source: document.getElementById('order-source').value,
+        payment: document.getElementById('payment-method').value,
         status: "New",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        // This line is critical for the Kitchen screen to sort correctly
+        createdAt: firebase.firestore.Timestamp.now() 
     };
 
-    // Save directly to Firebase (Kitchen will see it instantly)
-    await db.collection("orders").add(order);
-    
-    alert("Order Sent to Kitchen!");
-    cart = []; total = 0;
-    document.getElementById('total-display').innerText = 0;
+    try {
+        await db.collection("orders").add(orderData);
+        alert("Success! Order sent to Kitchen.");
+        cart = []; total = 0;
+        document.getElementById('total-display').innerText = "0 PKR";
+    } catch (e) {
+        alert("Firebase Error: Check Internet Connection");
+    }
 }
