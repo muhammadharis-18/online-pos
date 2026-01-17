@@ -1,45 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>YUMZO Kitchen LIVE</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YUMZO Kitchen | Live Feed</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+        :root { --accent: #f59e0b; }
+        .kitchen-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px; padding: 20px;
+        }
+        /* Glassmorphism Card Style */
+        .order-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            border-left: 8px solid var(--accent);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        .item-list { list-style: none; padding: 10px 0; margin: 0; }
+        .item-list li { font-size: 1.3rem; font-weight: 700; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .done-btn {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            width: 100%; padding: 12px; border: none; border-radius: 12px;
+            font-weight: 800; cursor: pointer; margin-top: 15px;
+        }
+    </style>
 </head>
-<body>
+<body class="dark-mode">
     <header class="header">
-        <h1 class="orange-glow">LIVE KITCHEN FEED</h1>
+        <h1><i class="fas fa-hat-chef orange-glow"></i> KITCHEN LIVE FEED</h1>
+        <div id="connection-status"><i class="fas fa-circle" style="color:#22c55e;"></i> Connected</div>
     </header>
 
-    <div id="kitchen-feed" style="padding:20px; display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
+    <div id="kitchen-feed" class="kitchen-grid">
         </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script>
-        firebase.initializeApp({projectId: "yumzo-dee28"});
+        const firebaseConfig = {
+            apiKey: "AIzaSyC6wmZVwGrjFM-fkIY4nRIpXdfCCbXaRh4",
+            authDomain: "yumzo-dee28.firebaseapp.com",
+            projectId: "yumzo-dee28",
+        };
+        firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        // REAL-TIME LISTENER: Captures new orders instantly
         db.collection("orders")
           .where("status", "==", "New")
           .orderBy("createdAt", "asc")
-          .onSnapshot(snapshot => {
+          .onSnapshot((snapshot) => {
             const feed = document.getElementById('kitchen-feed');
-            feed.innerHTML = "";
-            snapshot.forEach(doc => {
-                const order = doc.data();
+            feed.innerHTML = ""; // Clear for re-render
+            
+            if (snapshot.empty) {
+                feed.innerHTML = "<h2 style='opacity:0.5;'>No pending orders...</h2>";
+            }
+
+            snapshot.forEach((doc) => {
+                const data = doc.data();
                 feed.innerHTML += `
-                    <div class="glass-card" style="padding:25px; border-left: 8px solid var(--primary);">
-                        <h2 style="margin:0;">#${order.orderNum} <span style="font-size:0.9rem; opacity:0.6;">(${order.source})</span></h2>
-                        <ul style="font-size:1.4rem; padding:15px 0; list-style:none;">
-                            ${order.items.map(i => `<li><i class="fas fa-check-circle" style="color:var(--primary);"></i> ${i.name}</li>`).join('')}
+                    <div class="order-card">
+                        <div style="display:flex; justify-content:space-between; opacity:0.7;">
+                            <span>#${data.orderNum}</span>
+                            <span><i class="fas fa-clock"></i> Just Now</span>
+                        </div>
+                        <ul class="item-list">
+                            ${data.items.map(i => `<li><i class="fas fa-utensils orange-glow" style="font-size:0.9rem;"></i> ${i.name}</li>`).join('')}
                         </ul>
-                        <button class="btn-confirm" onclick="completeOrder('${doc.id}')">DONE / CLEAR</button>
+                        <div style="font-size:0.9rem; opacity:0.6; margin-bottom:10px;">Source: ${data.source} | Pay: ${data.payment}</div>
+                        <button class="done-btn" onclick="markDone('${doc.id}')">MARK AS READY</button>
                     </div>
                 `;
             });
+        }, (error) => {
+            console.error("Kitchen Feed Error:", error);
         });
 
-        function completeOrder(id) {
-            db.collection("orders").doc(id).update({ status: "Completed" });
+        async function markDone(id) {
+            await db.collection("orders").doc(id).update({ status: "Completed" });
         }
     </script>
 </body>
