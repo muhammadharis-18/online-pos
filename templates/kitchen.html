@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Yumzo Kitchen</title>
+    <title>YUMZO Kitchen LIVE</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="header"><h1>KITCHEN LIVE</h1></div>
-    <div id="kitchen-feed" style="padding: 20px;"></div>
+    <header class="header">
+        <h1 class="orange-glow">LIVE KITCHEN FEED</h1>
+    </header>
+
+    <div id="kitchen-feed" style="padding:20px; display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
+        </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -14,25 +18,28 @@
         firebase.initializeApp({projectId: "yumzo-dee28"});
         const db = firebase.firestore();
 
-        db.collection("orders").orderBy("createdAt", "desc").onSnapshot(snap => {
+        db.collection("orders")
+          .where("status", "==", "New")
+          .orderBy("createdAt", "asc")
+          .onSnapshot(snapshot => {
             const feed = document.getElementById('kitchen-feed');
             feed.innerHTML = "";
-            snap.forEach(doc => {
-                const data = doc.data();
-                if(data.status !== "Done") {
-                    feed.innerHTML += `
-                        <div class="item-card" style="text-align:left; margin-bottom:15px;">
-                            <h3>Order #${data.orderNum}</h3>
-                            <p>${data.items.map(i => i.name).join(", ")}</p>
-                            <button onclick="markDone('${doc.id}')" class="btn-confirm">MARK DONE</button>
-                        </div>
-                    `;
-                }
+            snapshot.forEach(doc => {
+                const order = doc.data();
+                feed.innerHTML += `
+                    <div class="glass-card" style="padding:25px; border-left: 8px solid var(--primary);">
+                        <h2 style="margin:0;">#${order.orderNum} <span style="font-size:0.9rem; opacity:0.6;">(${order.source})</span></h2>
+                        <ul style="font-size:1.4rem; padding:15px 0; list-style:none;">
+                            ${order.items.map(i => `<li><i class="fas fa-check-circle" style="color:var(--primary);"></i> ${i.name}</li>`).join('')}
+                        </ul>
+                        <button class="btn-confirm" onclick="completeOrder('${doc.id}')">DONE / CLEAR</button>
+                    </div>
+                `;
             });
         });
 
-        function markDone(id) {
-            db.collection("orders").doc(id).update({status: "Done"});
+        function completeOrder(id) {
+            db.collection("orders").doc(id).update({ status: "Completed" });
         }
     </script>
 </body>
