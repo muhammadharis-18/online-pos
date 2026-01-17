@@ -1,54 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>YUMZO Kitchen</title>
+    <title>Yumzo Kitchen</title>
     <link rel="stylesheet" href="/static/style.css">
-    <style>
-        .order-card { background: #1e293b; padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 10px solid #f59e0b; }
-        .item-list { font-size: 1.5rem; font-weight: bold; list-style: none; padding: 0; }
-        .status-btn { background: #22c55e; color: black; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-    </style>
 </head>
-<body class="dark-mode">
-    <h1>👨‍🍳 Kitchen Display</h1>
-    <div id="kitchen-orders">
-        </div>
+<body>
+    <div class="header"><h1>KITCHEN LIVE</h1></div>
+    <div id="kitchen-feed" style="padding: 20px;"></div>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script>
-        // Use the config from your image
-        const firebaseConfig = {
-            apiKey: "AIzaSyC6wmZVwGrjFM-fkIY4nRIpXdfCCbXaRh4",
-            authDomain: "yumzo-dee28.firebaseapp.com",
-            projectId: "yumzo-dee28",
-        };
-        firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp({projectId: "yumzo-dee28"});
         const db = firebase.firestore();
 
-        // Listen for new orders in Real-time
-        db.collection("orders").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
-            const container = document.getElementById('kitchen-orders');
-            container.innerHTML = "";
-            snapshot.forEach((doc) => {
-                const order = doc.data();
-                if(order.status !== "Completed") {
-                    container.innerHTML += `
-                        <div class="order-card">
-                            <h2>Order #${order.orderNum} (${order.source})</h2>
-                            <ul class="item-list">
-                                ${order.items.map(i => `<li>• ${i.name}</li>`).join('')}
-                            </ul>
-                            <button class="status-btn" onclick="completeOrder('${doc.id}')">DONE / CLEAR</button>
+        db.collection("orders").orderBy("createdAt", "desc").onSnapshot(snap => {
+            const feed = document.getElementById('kitchen-feed');
+            feed.innerHTML = "";
+            snap.forEach(doc => {
+                const data = doc.data();
+                if(data.status !== "Done") {
+                    feed.innerHTML += `
+                        <div class="item-card" style="text-align:left; margin-bottom:15px;">
+                            <h3>Order #${data.orderNum}</h3>
+                            <p>${data.items.map(i => i.name).join(", ")}</p>
+                            <button onclick="markDone('${doc.id}')" class="btn-confirm">MARK DONE</button>
                         </div>
                     `;
                 }
             });
         });
 
-        function completeOrder(id) {
-            db.collection("orders").doc(id).update({ status: "Completed" });
+        function markDone(id) {
+            db.collection("orders").doc(id).update({status: "Done"});
         }
     </script>
 </body>
