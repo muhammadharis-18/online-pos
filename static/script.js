@@ -17,18 +17,20 @@ function addToCart(name, price) {
 }
 
 async function placeOrder() {
-    if (cart.length === 0) return alert("Please add items!");
+    if (cart.length === 0) return alert("Cart is empty!");
 
     const order = {
         orderNum: Math.floor(100 + Math.random() * 900),
         items: cart,
         total: total,
-        source: document.getElementById('source').value,
+        source: document.getElementById('order-source').value,
         status: "New",
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
+    // Save directly to Firebase (Kitchen will see it instantly)
     await db.collection("orders").add(order);
+    
     alert("Order Sent to Kitchen!");
     cart = []; total = 0;
     document.getElementById('total-display').innerText = 0;
