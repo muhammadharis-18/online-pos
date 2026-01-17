@@ -2,10 +2,12 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 import os
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24) # Professional way to handle sessions
+# Generate a secure random key for your session
+app.secret_key = os.urandom(24)
 
 @app.route("/")
 def home():
+    # Only allow access if logged in
     if "user" not in session:
         return redirect(url_for("login"))
     return render_template("index.html")
@@ -13,7 +15,7 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        # Professional tip: You can later connect this to Firebase Auth
+        # Simple secure password for Yumzo Staff
         if request.form.get("password") == "yumzo123":
             session["user"] = "staff"
             return redirect(url_for("home"))
