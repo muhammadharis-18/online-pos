@@ -3,35 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yumzo Cashier</title>
+    <title>Yumzo POS | Premium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="app-container">
-        <header>
-            <h1>YUMZO POS</h1>
-            <div id="order-id">#ORD-001</div>
+    <div class="app-shell">
+        <header class="glass-header">
+            <div class="brand">
+                <i class="fas fa-utensils orange"></i>
+                <span>YUMZO</span>
+            </div>
+            <div class="order-badge">#ORD-102</div>
         </header>
 
-        <main class="menu-grid">
-            <button class="item-card" onclick="addToCart('Zinger', 450)">🍔 Zinger 450</button>
-            <button class="item-card" onclick="addToCart('Fries', 200)">🍟 Fries 200</button>
-            <button class="item-card" onclick="addToCart('Drink', 100)">🥤 Drink 100</button>
+        <main class="content">
+            <div class="category-title">Popular Items</div>
+            <div class="grid">
+                <button class="menu-card" onclick="addToCart('Zinger Burger', 450)">
+                    <i class="fas fa-hamburger fa-2x"></i>
+                    <span class="name">Zinger Burger</span>
+                    <span class="price">450 PKR</span>
+                </button>
+                <button class="menu-card" onclick="addToCart('French Fries', 200)">
+                    <i class="fas fa-fries fa-2x"></i>
+                    <span class="name">French Fries</span>
+                    <span class="price">200 PKR</span>
+                </button>
+                <button class="menu-card" onclick="addToCart('Soft Drink', 100)">
+                    <i class="fas fa-bottle-water fa-2x"></i>
+                    <span class="name">Soft Drink</span>
+                    <span class="price">100 PKR</span>
+                </button>
+            </div>
         </main>
 
-        <footer class="cart-tray">
-            <div id="cart-list"></div>
-            <div class="order-meta">
-                <select id="order-source">
-                    <option value="Walk-in">Walk-in</option>
-                    <option value="WhatsApp">WhatsApp</option>
-                </select>
-                <select id="payment-method">
-                    <option value="Cash">Cash</option>
-                    <option value="Online">Online</option>
-                </select>
+        <footer class="glass-tray">
+            <div id="cart-preview" class="cart-items"></div>
+            <div class="controls">
+                <select id="order-source"><option>Walk-in</option><option>WhatsApp</option></select>
+                <select id="payment-method"><option>Cash</option><option>Online</option></select>
             </div>
-            <button class="confirm-btn" onclick="placeOrder()">CONFIRM: <span id="total-display">0</span> PKR</button>
+            <button class="primary-btn" onclick="placeOrder()">
+                <span>CONFIRM ORDER</span>
+                <span id="total-display">0</span>
+            </button>
         </footer>
     </div>
 
