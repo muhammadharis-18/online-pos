@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect
 import sqlite3
 from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = "yumzo_secure_key"
 
-# ---------- DATABASE ----------
 def get_db():
     conn = sqlite3.connect("database.db")
     conn.row_factory = sqlite3.Row
@@ -12,31 +12,36 @@ def get_db():
 
 @app.route("/")
 def home():
+    if "user" not in session:
+        return redirect("/login")
     return render_template("index.html")
 
-@app.route("/add_order", methods=["POST"])
-def add_order():
-    data = request.json
-    total = data["total"]
-    items = data["items"]
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        # Simple local auth for now
+        if request.form.get("password") == "yumzo123":
+            session["user"] = "cashier"
+            return redirect("/")
+    return render_template("login.html")
 
+@app.route("/kitchen")
+def kitchen():
+    return render_template("kitchen.html")
+
+@app.route("/save_order", methods=["POST"])
+def save_order():
+    data = request.json
     conn = get_db()
     cur = conn.cursor()
-
-    cur.execute("INSERT INTO orders (total, status, date) VALUES (?, ?, ?)",
-                (total, "Completed", datetime.now()))
-    order_id = cur.lastrowid
-
-    for item in items:
-        cur.execute(
-            "INSERT INTO order_items (order_id, name, qty, price) VALUES (?, ?, ?, ?)",
-            (order_id, item["name"], item["qty"], item["price"])
-        )
-
+    
+    # Save to local SQLite as a backup/history
+    cur.execute("INSERT INTO orders (total, date, source) VALUES (?, ?, ?)",
+                (data['total'], datetime.now(), data['source']))
+    
     conn.commit()
     conn.close()
-
-    return jsonify({"message": "Order saved successfully", "order_id": order_id})
+    return jsonify({"status": "success"})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
