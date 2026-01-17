@@ -29,6 +29,10 @@ def kitchen():
 def logout():
     session.pop("user", None)
     return redirect(url_for("login"))
+@app.route("/receipt")
+def receipt():
+    return render_template("receipt.html")
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
+
