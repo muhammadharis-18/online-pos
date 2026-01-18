@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account{% endblock %}
+
+{% block content %}
+<div class="glass-card" style="width: 100%; max-width: 400px;">
+    <h2 style="text-align: center; margin-bottom: 20px;">Join Yumzo</h2>
+    
+    <input type="text" id="fullName" placeholder="Full Name">
+    <input type="email" id="email" placeholder="Email Address">
+    <input type="password" id="password" placeholder="Create Password">
+    
+    <div style="display: flex; gap: 10px;">
+        <input type="text" id="phone" placeholder="+92 300 1234567">
+        <button onclick="sendOTP()" style="width: 120px; background: #333; color: white; border:1px solid #555; border-radius:8px; cursor:pointer;">Send OTP</button>
+    </div>
+    
+    <div id="otpSection" style="display: none;">
+        <input type="text" id="otpCode" placeholder="Enter 6-digit Code" style="text-align: center; letter-spacing: 5px;">
+        <button class="primary-btn" onclick="verifyAndRegister()">VERIFY & REGISTER</button>
+    </div>
+
+    <div id="recaptcha-container"></div>
+    
+    <p style="text-align: center; margin-top: 15px; font-size: 0.9rem;">
+        Already have an account? <a href="/login" style="color: var(--primary);">Login</a>
+    </p>
+</div>
+
+<script>
+    // PASTE YOUR FIREBASE CONFIG HERE
+    const firebaseConfig = {
+        // ... paste the config you copied from the console ...
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // 1. Setup Invisible Recaptcha
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        'size': 'invisible'
+    });
+
+    // 2. Send OTP Function
+    function sendOTP() {
+        const phoneNumber = document.getElementById('phone').value;
+        const appVerifier = window.recaptchaVerifier;
+
+        auth.signInWithPhoneNumber(phoneNumber, appVerifier)
+            .then((confirmationResult) => {
+                window.confirmationResult = confirmationResult;
+                document.getElementById('otpSection').style.display = 'block';
+                alert("OTP Sent to " + phoneNumber);
+            }).catch((error) => {
+                alert("Error: " + error.message);
+                console.error(error);
+            });
+    }
+
+    // 3. Verify & Save User
+    function verifyAndRegister() {
+        const code = document.getElementById('otpCode').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const name = document.getElementById('fullName').value;
+
+        window.confirmationResult.confirm(code).then((result) => {
+            // Phone Verified! Now create the Auth User
+            const user = result.user;
+            
+            // Link Email/Password to this account (Professional Step)
+            user.updateEmail(email).then(() => {
+                user.updatePassword(password).then(() => {
+                    // Save Profile to Firestore
+                    db.collection("users").doc(user.uid).set({
+                        fullName: name,
+                        email: email,
+                        phone: user.phoneNumber,
+                        role: "customer",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(() => {
+                        window.location.href = "/"; // Success! Go Home
+                    });
+                });
+            });
+        }).catch((error) => {
+            alert("Invalid OTP or Error: " + error.message);
+        });
+    }
+</script>
+{% endblock %}
