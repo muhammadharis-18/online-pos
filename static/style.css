@@ -1,76 +1,70 @@
-.pos-input {
-    width: 95%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    font-family: inherit;
-}
+/* static/style.css */
 :root {
-  --primary: #f59e0b;
-  --bg-gradient: radial-gradient(at top left, #1e1b4b, #020617);
-  --glass: rgba(30, 41, 59, 0.45);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --text: #f8fafc;
+    --primary: #FF6B00; /* Yumzo Orange */
+    --dark: #1F1D2B;    /* Deep Background */
+    --light: #FFFFFF;
+    --glass: rgba(255, 255, 255, 0.1);
+    --border: rgba(255, 255, 255, 0.2);
 }
 
 body {
-  background: var(--bg-gradient);
-  color: var(--text);
-  font-family: 'Inter', -apple-system, sans-serif;
-  margin: 0; padding: 0;
-  height: 100vh; overflow: hidden;
-  display: flex; flex-direction: column;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--dark);
+    color: var(--light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
+/* The Glassmorphism Card Effect */
 .glass-card {
-  background: var(--glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
 
-.header {
-  padding: 20px;
-  background: rgba(15, 23, 42, 0.8);
-  border-bottom: 1px solid var(--glass-border);
-  display: flex; justify-content: space-between; align-items: center;
+/* Inputs & Buttons */
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: white;
+    outline: none;
 }
 
-.orange-glow { color: var(--primary); text-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
-
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px; padding: 20px;
-  flex-grow: 1; overflow-y: auto;
+button.primary-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.item-card {
-  padding: 25px 15px;
-  text-align: center;
-  display: flex; flex-direction: column; gap: 12px;
-  transition: all 0.3s ease;
-  cursor: pointer;
+button.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 0, 0.4);
 }
 
-.item-card:active { transform: scale(0.95); background: var(--primary); color: #000; }
-
-.cart-tray {
-  padding: 25px;
-  border-radius: 30px 30px 0 0;
-  background: rgba(15, 23, 42, 0.95);
-  border-top: 1px solid var(--glass-border);
+/* Navbar */
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem 5%;
+    align-items: center;
+    background: rgba(31, 29, 43, 0.9);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
-
-.btn-confirm {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  width: 100%; padding: 18px; border-radius: 15px;
-  border: none; font-weight: 800; font-size: 1.1rem;
-  color: #000; display: flex; justify-content: space-between;
-}
-
